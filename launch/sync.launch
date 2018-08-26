@@ -1,9 +1,9 @@
 <?xml version='1.0'?>
 <launch>
-  <!-- Joystick Node -->
+  <!-- Odom Sync Node -->
 	<node pkg="odom_sync" type="odom_sync_node" name="odom_sync" clear_params="true" output="screen">
 		<param name="source_namespace" value="/vicon/wand" />
 
-		<remap from="odom" to="/mavel/state/odometry" />
+		<!--remap from="odom" to="/mavel/state/odometry" /-->
 	</node>
 </launch>
