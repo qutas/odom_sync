@@ -19,7 +19,25 @@ void callback(const geometry_msgs::PoseStamped::ConstPtr& msg_pose, const geomet
 
 		msg_out.pose.pose = msg_pose->pose;
 
-		//TODO: twist
+		//Build a world-body rotation matrix
+		Eigen::Matrix3d rot = Eigen::Quaternion(msg_pose->pose.quaternion.w,
+												msg_pose->pose.quaternion.x,
+												msg_pose->pose.quaternion.y,
+												msg_pose->pose.quaternion.z).normalized().toRotationMatrix().transposed();
+
+		Eigen::Vector3d vl = rot*Eigen::Vector3d(msg_twist->twist.linear.x,
+												 msg_twist->twist.linear.y,
+												 msg_twist->twist.linear.z);
+		Eigen::Vector3d va = rot*Eigen::Vector3d(msg_twist->twist.angular.x,
+												 msg_twist->twist.angular.y,
+												 msg_twist->twist.angular.z);
+
+		msg_out.pose.odom.linear.x = vl.x();
+		msg_out.pose.odom.linear.y = vl.y();
+		msg_out.pose.odom.linear.z = vl.z();
+		msg_out.pose.odom.angular.x = va.x();
+		msg_out.pose.odom.angular.y = va.y();
+		msg_out.pose.odom.angular.z = va.z();
 
 		pub_odom.publish(msg_out);
 	} else {
